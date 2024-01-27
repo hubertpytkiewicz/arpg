@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3kxgp58arlt1"]
+
+[ext_resource type="Texture2D" uid="uid://c1o0eum3sydvv" path="res://images/Player/attack_frame.png" id="1_45lmc"]
+
+[sub_resource type="GDScript" id="GDScript_sqx1l"]
+script/source = "extends Area2D
+
+@export var current_damage = 10
+
+func _on_area_entered(area: Area2D):
+	var area_parent: Node = area.get_parent()
+	if area.has_method(\"take_damage\") and area_parent != get_parent(): #and !area_parent.is_in_group(\"enemies\") :
+		var direction: Vector2 = area.position - position
+		var damage = {\"direction\": direction, \"damage\": current_damage}
+		print(\"Attacked\")
+		area.take_damage(damage)
+		
+"
+
+[node name="Weapon" type="Area2D"]
+collision_mask = 0
+script = SubResource("GDScript_sqx1l")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(16, 0)
+texture = ExtResource("1_45lmc")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(7, -13, 12, -12, 17, -10, 20, -7, 23, -3, 25, 1, 25, 8, 21, 13, 17, 11, 0, 0)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
