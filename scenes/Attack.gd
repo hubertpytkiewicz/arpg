@@ -2,66 +2,71 @@ extends State
 
 var is_attacking: bool = false
 var current_angle: float
+var weapon_hitbox: CollisionPolygon2D
+@export var weapon_timer: Timer
+@export var animation_player: AnimationPlayer
 
 func enter(msg := {}) -> void:
 	print("Enter Attack")
-	subject.velocity = Vector2.ZERO
-	subject.idle.visible = false
-	subject.walk.visible = false
-	subject.attack.visible = true
 	subject.weapon.visible = false
+	weapon_hitbox = subject.weapon.get_node("WeaponHitbox")
+	
+	subject.anim.speed_scale = subject.attack_speed
+	print(subject.anim.speed_scale)
+	
+	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
+	var direction_available = int(floor(mouse_angle/90)*90)
+	match direction_available:
+		-180:
+			subject.anim.play("attack_up_left")
+		-90:
+			subject.anim.play("attack_up_right")
+		0:
+			subject.anim.play("attack_down_right")
+		90:
+			subject.anim.play("attack_down_left")
 
 func exit() -> void:
 	print("Exit attack")
 	subject.weapon.visible = false
 
-func update(_delta) -> void:
-	#print(subject.anim.current_animation_position)
-	if !Input.is_action_pressed("attack") and !is_attacking:
-		if subject.anim.is_playing():
-			subject.anim.stop()
-		transitioned.emit("idle")
-	if subject.anim.is_playing() and subject.anim.current_animation_position > 0.25/subject.anim.speed_scale and subject.anim.current_animation_position < 0.55/subject.anim.speed_scale:
-		is_attacking = true
-		subject.weapon.rotation = deg_to_rad(current_angle)
-		subject.weapon.set_collision_mask_value(1, true)
-		subject.weapon.visible = true
-		
-	if subject.anim.is_playing() and subject.anim.current_animation_position > 0.56/subject.anim.speed_scale:
-		is_attacking = false
-		subject.weapon.visible = false
-		subject.weapon.set_collision_mask_value(1, false)
+	subject.anim.speed_scale = 1
 	
+
+func update(_delta) -> void:
+	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
+	current_angle = deg_to_rad(int(floor(mouse_angle/45)*45))
+	var direction_available = int(floor(mouse_angle/90)*90)
+	match direction_available:
+		-180:
+
+			subject.anim.play("attack_up_left")
+		-90:
+
+			subject.anim.play("attack_up_right")
+		0:
+
+			subject.anim.play("attack_down_right")
+		90:
+
+			subject.anim.play("attack_down_left")
 	
 func physics_update(_delta) -> void:
-	
-	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
-	
-	var direction_available = int(round(mouse_angle/45)*45)
-	match direction_available:
-		-90:
-			subject.anim.play("attack_up")
-			current_angle = -90
-		-45:
-			subject.anim.play("attack_up_right")
-			current_angle = -45
-		0:
-			subject.anim.play("attack_right")
-			current_angle = 0
-		45:
-			subject.anim.play("attack_down_right")
-			current_angle = 45
-		90:
-			subject.anim.play("attack_down")
-			current_angle = 90
-		135:
-			subject.anim.play("attack_down_left")
-			current_angle = 135
-		180:
-			subject.anim.play("attack_left")
-			current_angle = -180
-		-135:
-			subject.anim.play("attack_up_left")
-			current_angle = -135
-	if subject.velocity != Vector2.ZERO and !is_attacking:
-		transitioned.emit("walk")
+			
+	if !Input.is_action_pressed("attack"): #and subject.anim.current_animation_position < 0.3: 
+		transitioned.emit("idle")
+		
+	if subject.anim.frame == 2:
+		subject.weapon.rotation = current_angle
+		subject.weapon.visible = true
+		weapon_hitbox.disabled = false
+		weapon_timer.start()
+		
+
+func _on_weapon_timer_timeout():
+	subject.weapon.visible = false
+	weapon_hitbox.disabled = true
+
+
+func _on_animation_player_animation_finished(anim_name):
+	transitioned.emit("idle")

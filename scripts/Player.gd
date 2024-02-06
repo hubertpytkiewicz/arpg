@@ -16,14 +16,12 @@ var anim
 #var up = Vector2(0,-1).normalized()
 #var left = Vector2(-1,0).normalized()
 @export var base_speed = 80 
+@export var attack_speed = 1
 
 
 func _ready():
-	idle = get_node("IdleSprite")
-	walk = get_node("WalkSprite")
-	attack = get_node("AttackSprite")
-	anim = get_node("AnimationPlayer")
 	weapon = get_node("Weapon")
+	anim = get_node("PlayerSprite")
 #
 #func _process(_delta):
 #	var direction: Vector2 = Input.get_vector("left", "right", "up", "down")
