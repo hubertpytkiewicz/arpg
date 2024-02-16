@@ -16,5 +16,4 @@ func take_damage(damage: Dictionary) -> void:
 	if current_health <= 0 and get_parent().is_in_group("players"):
 		get_tree().quit()
 	elif current_health <=0 and !get_parent().is_in_group("players"):
-		print(get_parent().position)
 		get_parent().queue_free()

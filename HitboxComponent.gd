@@ -4,5 +4,4 @@ extends Area2D
 
 func take_damage(damage: Dictionary):
 	if healt_component:
-		print("Hitbox")
 		healt_component.take_damage(damage)

@@ -4,13 +4,13 @@
 [ext_resource type="Texture2D" uid="uid://cidbn3wlyni3a" path="res://images/Player/Knight1_Idle.png" id="2_rg3w0"]
 [ext_resource type="Texture2D" uid="uid://bh6p1j3b6rir" path="res://images/Player/Knight1_Move.png" id="3_y6x20"]
 [ext_resource type="Texture2D" uid="uid://dcd22kl2eenmw" path="res://images/Player/Knight1_Attack.png" id="4_i6l7o"]
-[ext_resource type="Script" path="res://scenes/StateMachine.gd" id="5_jp2co"]
-[ext_resource type="Script" path="res://scenes/Idle.gd" id="6_tnu4r"]
-[ext_resource type="Script" path="res://scenes/Walk.gd" id="7_rhctr"]
-[ext_resource type="Script" path="res://scenes/Attack.gd" id="8_spjse"]
+[ext_resource type="Script" path="res://scripts/StateMachine.gd" id="5_m8t3t"]
+[ext_resource type="Script" path="res://scripts/Idle.gd" id="6_gbjm0"]
+[ext_resource type="Script" path="res://scripts/Walk.gd" id="7_oqmdd"]
+[ext_resource type="Script" path="res://scripts/Attack.gd" id="8_m2fkp"]
 [ext_resource type="PackedScene" uid="uid://c3kxgp58arlt1" path="res://scenes/weapon.tscn" id="9_nt4vc"]
 [ext_resource type="Script" path="res://HealthComponent.gd" id="10_eqsmv"]
-[ext_resource type="Script" path="res://scenes/PlayerHitbox.gd" id="11_7c80q"]
+[ext_resource type="Script" path="res://scripts/PlayerHitbox.gd" id="11_re22o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hjb00"]
 atlas = ExtResource("4_i6l7o")
@@ -338,25 +338,23 @@ frame = 1
 frame_progress = 0.618056
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-visible = false
-polygon = PackedVector2Array(0, -9, 3, -6, 5, -1, 5, 3, 4, 6, 4, 8, 4, 10, 1, 10, 0, 9, -1, 9, -1, 10, -4, 10, -4, 8, -5, 3, -4, -2)
+polygon = PackedVector2Array(0, 3, 3, 3, 5, 3, 4, 6, 4, 8, 4, 10, 1, 10, 0, 9, -1, 9, -1, 10, -4, 10, -4, 8, -3, 3)
 
 [node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("initial_state")]
-script = ExtResource("5_jp2co")
+script = ExtResource("5_m8t3t")
 initial_state = NodePath("Idle")
 
 [node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("subject")]
-script = ExtResource("6_tnu4r")
+script = ExtResource("6_gbjm0")
 subject = NodePath("../..")
 
 [node name="Walk" type="Node" parent="StateMachine" node_paths=PackedStringArray("subject")]
-script = ExtResource("7_rhctr")
+script = ExtResource("7_oqmdd")
 subject = NodePath("../..")
 
-[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("weapon_timer", "animation_player", "subject")]
-script = ExtResource("8_spjse")
+[node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("weapon_timer", "subject")]
+script = ExtResource("8_m2fkp")
 weapon_timer = NodePath("../../WeaponTimer")
-animation_player = NodePath("")
 subject = NodePath("../..")
 
 [node name="Weapon" parent="." instance=ExtResource("9_nt4vc")]
@@ -368,7 +366,7 @@ max_health = 100.0
 
 [node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("healt_component")]
 visible = false
-script = ExtResource("11_7c80q")
+script = ExtResource("11_re22o")
 healt_component = NodePath("../HealthComponent")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox"]

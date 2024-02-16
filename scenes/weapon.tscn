@@ -9,15 +9,17 @@ script/source = "extends Area2D
 
 func _on_area_entered(area: Area2D):
 	var area_parent: Node = area.get_parent()
-	if area.has_method(\"take_damage\") and area_parent != get_parent(): #and !area_parent.is_in_group(\"enemies\") :
+	if area.has_method(\"take_damage\"):# and area_parent != get_parent(): #and !area_parent.is_in_group(\"enemies\") :
 		var direction: Vector2 = area.position - position
 		var damage = {\"direction\": direction, \"damage\": current_damage}
-		print(\"Attacked\")
+		print(\"Attacked by \", area)
 		area.take_damage(damage)
 		
 "
 
 [node name="Weapon" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
 script = SubResource("GDScript_sqx1l")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -13,18 +13,18 @@ func enter(msg := {}) -> void:
 	
 	subject.anim.speed_scale = subject.attack_speed
 	print(subject.anim.speed_scale)
-	
-	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
-	var direction_available = int(floor(mouse_angle/90)*90)
-	match direction_available:
-		-180:
-			subject.anim.play("attack_up_left")
-		-90:
-			subject.anim.play("attack_up_right")
-		0:
-			subject.anim.play("attack_down_right")
-		90:
-			subject.anim.play("attack_down_left")
+#
+#	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
+#	var direction_available = int(floor(mouse_angle/90)*90)
+#	match direction_available:
+#		-180:
+#			subject.anim.play("attack_up_left")
+#		-90:
+#			subject.anim.play("attack_up_right")
+#		0:
+#			subject.anim.play("attack_down_right")
+#		90:
+#			subject.anim.play("attack_down_left")
 
 func exit() -> void:
 	print("Exit attack")
@@ -35,20 +35,16 @@ func exit() -> void:
 
 func update(_delta) -> void:
 	var mouse_angle = rad_to_deg((subject.get_global_mouse_position() - subject.position).angle())
-	current_angle = deg_to_rad(int(floor(mouse_angle/45)*45))
+	current_angle = deg_to_rad(int(floor(mouse_angle/15)*15))
 	var direction_available = int(floor(mouse_angle/90)*90)
 	match direction_available:
 		-180:
-
 			subject.anim.play("attack_up_left")
 		-90:
-
 			subject.anim.play("attack_up_right")
 		0:
-
 			subject.anim.play("attack_down_right")
 		90:
-
 			subject.anim.play("attack_down_left")
 	
 func physics_update(_delta) -> void:
